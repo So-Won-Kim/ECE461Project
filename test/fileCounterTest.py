@@ -6,7 +6,6 @@ import json
 
 class TestFileCounter(unittest.TestCase):
 
-
     def testReadTempFile(self):
         tempInfo = readTempFile("testInfo.txt")
         self.assertEqual(tempInfo[0], "https://github.com/paulmillr/popular-user-agents")
@@ -53,7 +52,6 @@ def warp_test_suite(testcase_class):
     tests = unittest.defaultTestLoader.loadTestsFromTestCase(testcase_class)
     suite.addTest(tests)
     return(suite)
-        
 
 if __name__ == '__main__':
     result_value = {"Failures": 0, "Ran" : 0}

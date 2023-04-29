@@ -1,42 +1,35 @@
 #!/bin/bash
 
-if [ "$1" == "install" ];
-then
-	pip install GitPython
-	pip install coverage
-	python3 setup.py
-	cp -r cloc ./test
-	npm install typescript
-	npm install fs
-	npm install readline
-	npm install dotenv
-	npm install @octokit/rest
-	npm install @octokit/core
-	npm install @octokit/request
-	npm install types
-	npm i --save-dev @types/node
-	curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
-	export NVM_DIR="$HOME/.nvm"
-	[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-	[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-	nvm install v18.14.0
-	nvm use v18.14.0
-	tsc --init
-	npm install mocha --save-dev
-	npm install chai @types/chai --save-dev
-	npm install sinon @types/sinon --save-dev
-	npm install @types/mocha --save-dev
-	npm i nyc --save-dev
-	npm install --save-dev mochawesome
-
-elif [ "$1" == "build" ];
-then
-	tsc src/npmToGithub.ts
-	tsc src/licAndResp.ts
-	tsc src/busfactor.ts
-	tsc test/npmToGithub.spec.ts
-elif [ "$1" == "test" ];
-then
+if [ "$1" == "install" ]; then
+	python3 -m venv ./venv
+	if pip show GitPython > /dev/null 2>&1; then
+		bash -c 'source venv/bin/activate && pip install GitPython && deactivate'
+	fi
+	if pip show coverage > /dev/null 2>&1; then
+		bash -c 'source venv/bin/activate && pip install coverage && deactivate'
+	fi
+	if ! [ -e ./cloc ]; then
+		git clone https://github.com/AlDanial/cloc.git
+	fi
+	if [[ $(node -v) != v18.14.0 ]]; then
+		curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.3/install.sh | bash
+		export NVM_DIR="$HOME/.nvm"
+		[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+		[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+		nvm install v18.14.0
+		nvm use v18.14.0
+	fi
+	if ! [ -e ./tsconfig.json ]; then
+		npx tsc --init
+	fi
+	npm i typescript fs readline dotenv @octokit/rest @octokit/core @octokit/request types --save --no-fund --silent
+	npm i @types/node mocha chai @types/chai sinon @types/sinon @types/mocha nyc mochawesome  --save-dev --no-fund --silent
+elif [ "$1" == "build" ]; then
+	npx tsc src/npmToGithub.ts
+	npx tsc src/licAndResp.ts
+	npx tsc src/busfactor.ts
+	npx tsc test/npmToGithub.spec.ts
+elif [ "$1" == "test" ]; then
 	cd test
 	python3 -m coverage run -m fileCounterTest > /dev/null 2>&1
 	python3 -m coverage json > /dev/null 2>&1
@@ -47,6 +40,5 @@ then
 else
 	node src/npmToGithub.js $1
 	python3 fileCounter.py
-	 
 fi
 
