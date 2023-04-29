@@ -27,21 +27,25 @@ def main():
         # Call extra js files
         os.system("node ./src/licAndResp.js " + owner + " " + repo)
         os.system("node ./src/busfactor.js " + owner + " " + repo)
-        os.system("node ./src/VPandRP.js " + owner + " " + repo)
+        # os.system("node ./src/VPandRP.js " + owner + " " + repo)
         tempInfo = readTempFile("info.tmp")
         outputJSON = createJSONFile(tempInfo)
-        #print(outputJSON)
+        # print(outputJSON)
 
 
 # reads the completed version of the info file (inter-system storage), calculates netScore from the information and outputs the results as a list of strings
 def readTempFile(tmpFile):
     tempFile = open(tmpFile, "r")
     tempInfo = tempFile.read().splitlines()
-    #3: rampup, 4: correctness, 5: license, 6: responsiveness, 7: busfactor
+    # 3: rampup, 4: correctness, 5: license, 6: responsiveness, 7: busfactor
     netScore = (
-        #float(tempInfo[3]) * 0.3 + float(tempInfo[4]) * 0.3 + float(tempInfo[7]) * 0.4
+        # float(tempInfo[3]) * 0.3 + float(tempInfo[4]) * 0.3 + float(tempInfo[7]) * 0.4
         # TODO: add VersionPin and PullRequest
-        float(tempInfo[5]) * ((float(tempInfo[7]) + (1)) * 0.3 + (float(tempInfo[3]) + float(tempInfo[4]) + float(tempInfo[6]) + (1)) * 0.1)
+        float(tempInfo[5])
+        * (
+            (float(tempInfo[7]) + (1)) * 0.3
+            + (float(tempInfo[3]) + float(tempInfo[4]) + float(tempInfo[6]) + (1)) * 0.1
+        )
     )
     tempFile.close()
     tempInfo.append(str(netScore))
@@ -201,7 +205,7 @@ def createJSONFile(tmpInfo):
         + tmpInfo[5]
         + "}\n"
     )
-    
+
     # TODO: add GoodPinningPractice and PullRequest
     dictionary = {
         "BusFactor": float(tmpInfo[7]),

@@ -108,4 +108,5 @@ export async function liceMain(owner: string, repo: string) {
   await getResponsiveness(owner, repo); //responsiveness calculation
 }
 
+//liceMain('vesln', 'package');
 liceMain(process.argv[2], process.argv[3]);

@@ -9,7 +9,7 @@ dotenv.config();
 
 // Send GraphQL query to GitHub API
 // Returns a promise to the number of forks in a given repository
-async function getForkCount(owner: string, repo: string) {
+export async function getForkCount(owner: string, repo: string) {
   const octokit = new Octokit({ auth: `token ${process.env.GITHUB_TOKEN}` });
   const query = `{
       repository(owner: "${owner}", name: "${repo}") {
@@ -31,7 +31,7 @@ async function getForkCount(owner: string, repo: string) {
 
 // Send REST query to GitHub API
 // Returns a promise to the most recent commit
-async function getRecentCommit(owner: string, repo: string) {
+export async function getRecentCommit(owner: string, repo: string) {
   const octokit = new Octokit({ auth: `token ${process.env.GITHUB_TOKEN}` });
   try {
     const commitResponse = await octokit.request(
@@ -51,7 +51,7 @@ async function getRecentCommit(owner: string, repo: string) {
 }
 
 // Returns number of days passed since commitDate
-function calculateDays(commitDate: string) {
+export function calculateDays(commitDate: string) {
   const currentDate = new Date();
 
   const dateParts = commitDate.split('-');
@@ -71,7 +71,7 @@ function calculateDays(commitDate: string) {
 // Else busfactor = forkCount/1000/time factor
 // Time factor = years passed since most recent commit + 1
 // If most recent commit is within 1 year, time factor = 1
-function calculateBusFactor(forkCount: number, daysSinceCommit: number) {
+export function calculateBusFactor(forkCount: number, daysSinceCommit: number) {
   const timeFactor = Math.ceil(daysSinceCommit / 365);
 
   if (forkCount >= 1000) return 1 / timeFactor;
@@ -79,7 +79,7 @@ function calculateBusFactor(forkCount: number, daysSinceCommit: number) {
 }
 
 // driver code
-async function getBusScore(owner: string, repo: string) {
+export async function getBusScore(owner: string, repo: string) {
   try {
     const forkCount = await getForkCount(owner, repo);
     const commitDate = await getRecentCommit(owner, repo);
@@ -96,4 +96,5 @@ async function getBusScore(owner: string, repo: string) {
 
 //const bs = getBusScore();
 //export { bs };
+//getBusScore('vesln', 'package');
 getBusScore(process.argv[2], process.argv[3]);

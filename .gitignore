@@ -8,6 +8,7 @@ node_modules/
 venv/
 clocOutput
 githubURLS.txt
+cloc/
 
 #build
 src/*.js
@@ -29,6 +30,9 @@ nycCoverage
 
 #log
 logFile.txt
+
+#outputs
+.tmp
 
 #dev
 testbash
